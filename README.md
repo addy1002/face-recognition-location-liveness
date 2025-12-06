@@ -29,3 +29,6 @@ Browser Geolocation API
 Database:
 Firebase Realtime Database
 Firebase Storage
+
+
+The location and blink detection is off in the actual code you can use the txt file to activate location and blink eye detection
