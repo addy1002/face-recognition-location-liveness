@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lecture Timetable</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background-color: #f5f6fa; }
+        .container { margin-top: 50px; }
+        table { background: white; border-radius: 10px; overflow: hidden; }
+        th { background-color: #007bff; color: white; text-align: center; }
+        td, th { text-align: center; vertical-align: middle; }
+        td[contenteditable="true"] { background-color: #fff3cd; cursor: text; }
+        .save-btn { margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center mb-4">📅 Editable Lecture Timetable</h2>
+    <table class="table table-bordered" id="timetableTable">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Time Slot</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody id="timetableBody">
+            <tr><td colspan="3" class="text-center">Loading...</td></tr>
+        </tbody>
+    </table>
+    <div class="text-center">
+        <button class="btn btn-success save-btn" onclick="saveChanges()">💾 Save Changes</button>
+        <a href="/" class="btn btn-secondary ms-2">⬅ Back to Main</a>
+    </div>
+</div>
+
+<script>
+async function loadTimetable() {
+    const res = await fetch("/get_timetable_data");
+    const data = await res.json();
+    const tbody = document.getElementById("timetableBody");
+    tbody.innerHTML = "";
+
+    for (const [day, slots] of Object.entries(data)) {
+        for (const [slot, subject] of Object.entries(slots)) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${day}</td>
+                <td>${slot}</td>
+                <td contenteditable="true" data-day="${day}" data-slot="${slot}">${subject}</td>
+            `;
+            tbody.appendChild(row);
+        }
+    }
+}
+
+async function saveChanges() {
+    const editableCells = document.querySelectorAll("td[contenteditable='true']");
+    for (const cell of editableCells) {
+        const day = cell.dataset.day;
+        const slot = cell.dataset.slot;
+        const subject = cell.innerText.trim();
+
+        await fetch("/update_timetable", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ day, slot, subject })
+        });
+    }
+    alert("✅ Timetable updated successfully!");
+    loadTimetable();
+}
+
+loadTimetable();
+</script>
+</body>
+</html>

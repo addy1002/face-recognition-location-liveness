@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Face Attendance Web</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Attendance System</h1>
+    </header>
+
+    <div class="content">
+      <div class="left">
+        <div class="video-frame">
+          <img id="videoStream" src="{{ url_for('video_feed') }}" alt="video stream">
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="card">
+          <div class="photo-wrap">
+            <img id="studentPhoto" src="" alt="photo" />
+          </div>
+          <h2 id="studentName">Detecting...</h2>
+          <p id="studentId">ID: -</p>
+          <p id="studentMajor">Major: -</p>
+          <div class="status" id="statusText">Idle</div>
+          <button id="allowLocationBtn">Enable Location</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
